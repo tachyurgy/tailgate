@@ -1,0 +1,13 @@
+<h1>Members</h1>
+<table class="members">
+  <tr><th>Handle</th><th>Name</th><th>Followers</th><th>Following</th><th>Mode</th></tr>
+  <% @members.each do |m| %>
+    <tr>
+      <td><%= link_to "@#{m.handle}", member_path(m) %></td>
+      <td><%= m.display_name %></td>
+      <td><%= m.followers_count %></td>
+      <td><%= m.following_count %></td>
+      <td><span class="pill <%= m.celebrity? ? 'pull' : 'push' %>"><%= m.celebrity? ? "pull (celebrity)" : "push" %></span></td>
+    </tr>
+  <% end %>
+</table>

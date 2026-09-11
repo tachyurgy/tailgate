@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tailgate</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="/">Tailgate</a>
+      <nav>
+        <%= link_to "Feed", feed_path %>
+        <%= link_to "Members", members_path %>
+        <%= link_to "Fan-out inspector", inspector_path %>
+      </nav>
+      <%= form_with url: viewer_path, method: :post, class: "viewer" do |f| %>
+        <label>Browsing as</label>
+        <%= f.select :handle, Member.order(:handle).pluck(:handle), { selected: viewer&.handle }, onchange: "this.form.requestSubmit()" %>
+      <% end %>
+    </header>
+    <main>
+      <% if notice %><p class="flash"><%= notice %></p><% end %>
+      <%= yield %>
+    </main>
+    <footer>
+      <p>Tailgate is a social activity layer for a picks app: Rails owns members, the follow graph and activities; <code>fanoutd</code> (Go) owns timeline fan-out. Exactly-once delivery per (follower, activity) is a unique index, not a promise.</p>
+    </footer>
+  </body>
+</html>

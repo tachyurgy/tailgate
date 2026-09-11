@@ -1,0 +1,29 @@
+<div class="profile">
+  <h1>@<%= @member.handle %> <small><%= @member.display_name %></small></h1>
+  <p class="bio"><%= @member.bio %></p>
+  <p class="stats"><b><%= @member.followers_count %></b> followers · <b><%= @member.following_count %></b> following ·
+     fan-out mode <span class="pill <%= @member.celebrity? ? 'pull' : 'push' %>"><%= @member.celebrity? ? "pull" : "push" %></span></p>
+  <% if @member == viewer %>
+    <div class="post">
+      <%= form_with url: activities_path, method: :post do |f| %>
+        <%= f.select :kind, Activity::KINDS %>
+        <%= f.text_field :text, placeholder: "milestone text (only for milestone)" %>
+        <%= f.submit "Post activity", class: "btn" %>
+      <% end %>
+    </div>
+  <% elsif @following %>
+    <%= button_to "Unfollow", unfollow_member_path(@member), method: :delete, class: "btn" %>
+  <% else %>
+    <%= button_to "Follow", follow_member_path(@member), method: :post, class: "btn primary" %>
+  <% end %>
+</div>
+<h2>Activity</h2>
+<ol class="feed">
+  <% @activities.each do |a| %>
+    <li>
+      <span class="what"><%= a.summary %></span>
+      <span class="meta"><%= time_ago_in_words(a.created_at) %> ago ·
+        <% if a.fanned_out_at %>fanned out as <b><%= a.fanout_mode %></b> to <%= a.deliveries_count %> timelines<% else %><i>fan-out pending</i><% end %></span>
+    </li>
+  <% end %>
+</ol>

@@ -1,0 +1,20 @@
+<h1>Your feed <small>as @<%= viewer.handle %></small></h1>
+<% unless @healthy %>
+  <p class="warn">fanoutd is unreachable (<%= @error %>). The feed is served by the Go service; Rails does not fall back to a slow query on purpose.</p>
+<% end %>
+<% if @items.empty? && @healthy %>
+  <p class="muted">Nothing here yet. Follow a few members, or post something from your profile.</p>
+<% end %>
+<ol class="feed">
+  <% @items.each do |a, source| %>
+    <li>
+      <span class="who"><%= link_to "@#{a.member.handle}", member_path(a.member) %></span>
+      <span class="what"><%= a.summary %></span>
+      <span class="meta"><%= time_ago_in_words(a.created_at) %> ago · <span class="pill <%= source %>"><%= source %></span></span>
+    </li>
+  <% end %>
+</ol>
+<% if @next_before %>
+  <p><%= link_to "Older", feed_path(before: @next_before), class: "btn" %></p>
+<% end %>
+<p class="muted small">Pills: <b>push</b> rows were materialised into your timeline by fanoutd when the author posted; <b>pull</b> rows are from high-follower authors and were merged at read time, which is how a feed stays cheap when one member has a million followers.</p>

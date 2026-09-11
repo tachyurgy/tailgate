@@ -1,0 +1,6 @@
+.git
+log/*
+tmp/*
+storage/*
+fanoutd/
+node_modules

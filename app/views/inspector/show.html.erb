@@ -1,0 +1,17 @@
+<h1>Fan-out inspector</h1>
+<p>fanoutd: <span class="pill <%= @healthy ? 'push' : 'warn' %>"><%= @healthy ? "healthy" : "unreachable" %></span> ·
+   timeline rows: <b><%= number_with_delimiter @entries %></b> ·
+   celebrity threshold: <b><%= Member::CELEBRITY_THRESHOLD %></b> followers</p>
+<h2>Celebrity authors (pull mode)</h2>
+<p class="muted small">Their posts are not copied into follower timelines. fanoutd merges them at read time from the follow graph, so a post by a member with 100k followers costs one row, not 100k.</p>
+<ul><% @celebs.each do |m| %><li>@<%= m.handle %> (<%= m.followers_count %>)</li><% end %></ul>
+<h2>Pending outbox events (<%= @pending.size %>)</h2>
+<% if @pending.empty? %><p class="muted">None. Every activity has been published to fanoutd.</p><% end %>
+<ul><% @pending.each do |e| %><li>##<%= e.id %> @<%= e.activity.member.handle %> · attempts <%= e.attempts %> · <%= e.last_error %></li><% end %></ul>
+<h2>Recent activities</h2>
+<table class="members">
+  <tr><th>Who</th><th>What</th><th>Mode</th><th>Delivered</th><th>When</th></tr>
+  <% @recent.each do |a| %>
+    <tr><td>@<%= a.member.handle %></td><td><%= a.summary %></td><td><%= a.fanout_mode || "pending" %></td><td><%= a.deliveries_count %></td><td><%= time_ago_in_words(a.created_at) %> ago</td></tr>
+  <% end %>
+</table>
