@@ -46,4 +46,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-gem "json", "~> 2.13"
+gem "json", "~> 3.0"
